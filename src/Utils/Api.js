@@ -58,6 +58,10 @@ class Api {
         }).then(this._checkResponse);
     }
 
+    changeLikeCardStatus(id, isLiked) {
+        return isLiked ? this.addLike(id) : this.deleteLike(id);
+    }
+
     changeAvatar(data) {
         return fetch(`${this._baseUrl}/users/me/avatar`, {
             method: 'PATCH',
@@ -77,4 +81,5 @@ const api = new Api({
     }
 });
 
+window.api = api;
 export default api;

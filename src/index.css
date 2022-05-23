@@ -54,6 +54,8 @@
 @import url(../src/Blocks/card/__like-button/_active/card__like-button_active.css);
 @import url(../src/Blocks/card/__sum-like/card__sum-like.css);
 @import url(../src/Blocks/card/__container-like/card__container-like.css);
+@import url(../src/Blocks/card/__delete-button/_hidden/card__delete-button_hidden.css);
+@import url(../src/Blocks/card/__delete-button/_visible/card__delete-button_visible.css);
 
 /* Popup full size image */
 @import url(../src/Blocks/popup/_transparent/popup_transparent.css);

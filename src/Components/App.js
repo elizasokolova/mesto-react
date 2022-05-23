@@ -1,16 +1,32 @@
 import '../App.css';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
 import PopupWithForm from "./PopupWithForm";
+import EditProfilePopup from './EditProfilePopup';
 import ImagePopup from "./ImagePopup";
+import api from "../Utils/Api";
+import {CurrentUserContext} from "../Contexts/CurrentUserContext";
 
 export default function App() {
     const [isEditPopupOpened, setIsEditPopupOpened] = React.useState(false);
     const [isAddCardPopupOpened, setIsAddCardPopupOpened] = React.useState(false);
     const [isChangeAvatarPopupOpened, setIsChangeAvatarPopupOpened] = React.useState(false);
-    const [selectedCard, setSelectedCard] = React.useState(null)
+    const [selectedCard, setSelectedCard] = React.useState(null);
+
+    const [currentUser, setCurrentUser] = React.useState({
+        name: '',
+        about: ''
+    });
+
+    useEffect(() => {
+       api.getCurrentUser()
+           .then((user) => {
+               setCurrentUser(user);
+           })
+           .catch(err => console.error(`Error: ${err}`));
+    }, []);
 
     const closeAllPopups = () => {
         setIsEditPopupOpened(false);
@@ -26,6 +42,7 @@ export default function App() {
 
     return (
         <>
+        <CurrentUserContext.Provider value={currentUser}>
             <Header/>
             <Main
                 onEditAvatar={handleEditAvatarClick}
@@ -36,21 +53,9 @@ export default function App() {
             <Footer/>
 
             {/* Попап Редактировать профиль */}
-            <PopupWithForm
-                name="edit"
-                title="Редактировать профиль"
-                saveButtonText="Сохранить"
-                onSave={closeAllPopups}
+            <EditProfilePopup
                 isOpen={isEditPopupOpened}
-                onClose={closeAllPopups}
-            >
-                <input name="name" id="name" type="text" minLength="2" maxLength="40" required
-                       placeholder="Имя" className="popup__edit-area"/>
-                <span className="popup__error" id="popup__name-error"></span>
-                <input name="about" id="about" type="text" minLength="2" maxLength="200" required
-                       placeholder="Описание" className="popup__edit-area"/>
-                <span className="popup__error" id="popup__about-error"></span>
-            </PopupWithForm>
+                onClose={closeAllPopups} />
 
             {/* Попап Добавить новую карточку */}
             <PopupWithForm
@@ -96,6 +101,7 @@ export default function App() {
                 card={selectedCard}
                 onClose={closeAllPopups}
             />
+        </CurrentUserContext.Provider>
         </>
     )
 }
