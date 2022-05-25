@@ -1,34 +1,9 @@
 import React from "react";
 import Card from './Card';
 import {CurrentUserContext} from "../Contexts/CurrentUserContext";
-import api from "../Utils/Api";
 
 export default function Main(props) {
     const currentUser = React.useContext(CurrentUserContext);
-    const [cards, setCards] = React.useState([]);
-
-    function handleCardLike(card) {
-        // Снова проверяем, есть ли уже лайк на этой карточке
-        const isLiked = card.likes.some(user => user._id === currentUser._id);
-        // Отправляем запрос в API и получаем обновлённые данные карточки
-        api.changeLikeCardStatus(card._id, !isLiked)
-            .then((newCard) => setCards((oldCards) =>
-                oldCards.map((oldCard) => oldCard._id === newCard._id ? newCard : oldCard)
-            ))
-            .catch(err => console.error(`Error: ${err}`));
-    }
-
-    function handleCardDelete(card) {
-        api.deleteCard(card._id)
-            .then(() => setCards((oldCards) => oldCards.filter((oldCard) => oldCard._id !== card._id)))
-            .catch(err => console.error(`Error: ${err}`));
-    }
-
-    React.useEffect(() => {
-        api.getInitialCards()
-            .then(setCards)
-            .catch(err => console.error(`Error: ${err}`));
-    }, []);
 
     return (
         <main className="content">
@@ -51,11 +26,11 @@ export default function Main(props) {
             </section>
 
             <section className="photo-grid">
-                {cards.map(card => (<Card key={card._id}
+                {props.cards.map(card => (<Card key={card._id}
                                           card={card}
                                           onCardClick={props.onCardClick}
-                                          onCardDelete={handleCardDelete}
-                                          onCardLike={handleCardLike} />))}
+                                          onCardDelete={props.onCardDelete}
+                                          onCardLike={props.onCardLike} />))}
             </section>
         </main>
     )
