@@ -7,15 +7,18 @@ export default function AddPlacePopup ({isOpen, onClose, onAddPlace}) {
     const onTitleChange = (event) => setTitle(event.target.value);
     const onLinkChange = (event) => setLink(event.target.value);
 
-    function handleSubmit(evt) {
-        evt.preventDefault(evt);
+    function handleSubmit(event) {
+        event.preventDefault();
         onAddPlace({
             name: title,
             link: link,
         });
+    }
+
+    React.useEffect(() => {
         setTitle('');
         setLink('');
-    }
+    }, [isOpen]); /* Сбрасываем поля ввода */
 
     return (
         <PopupWithForm

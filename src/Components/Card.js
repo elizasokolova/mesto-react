@@ -12,7 +12,7 @@ export default function Card(props) {
 
     const handleCardClick = () => props.onCardClick(props.card);
     const handleCardLike = () => props.onCardLike(props.card);
-    const handleCardDelete = () => props.onCardDelete(props.card);
+    const handleCardDelete = () => props.onCardDeleteConfirm(props.card);
 
     return (
         <article className="card">

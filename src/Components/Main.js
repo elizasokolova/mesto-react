@@ -27,10 +27,11 @@ export default function Main(props) {
 
             <section className="photo-grid">
                 {props.cards.map(card => (<Card key={card._id}
-                                          card={card}
-                                          onCardClick={props.onCardClick}
-                                          onCardDelete={props.onCardDelete}
-                                          onCardLike={props.onCardLike} />))}
+                                            card={card}
+                                            onCardClick={props.onCardClick}
+                                            onCardDelete={props.onCardDelete}
+                                            onCardDeleteConfirm={props.onCardDeleteConfirm}
+                                            onCardLike={props.onCardLike} />))}
             </section>
         </main>
     )

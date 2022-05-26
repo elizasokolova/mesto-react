@@ -3,9 +3,9 @@ import React, {useEffect} from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import Main from './Main';
-import PopupWithForm from "./PopupWithForm";
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
+import DeleteCardPopup from "./DeleteCardPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
 import api from "../Utils/Api";
@@ -15,7 +15,9 @@ export default function App() {
     const [isEditPopupOpened, setIsEditPopupOpened] = React.useState(false);
     const [isAddCardPopupOpened, setIsAddCardPopupOpened] = React.useState(false);
     const [isChangeAvatarPopupOpened, setIsChangeAvatarPopupOpened] = React.useState(false);
+    const [isDeleteCardPopupOpened, setIsDeleteCardPopupOpened] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState(null);
+    const [cardToDelete, setCardToDelete]= React.useState(null);
 
     const [currentUser, setCurrentUser] = React.useState({
         name: '',
@@ -36,8 +38,11 @@ export default function App() {
     }
 
     function handleCardDelete(card) {
-        api.deleteCard(card._id)
-            .then(() => setCards((oldCards) => oldCards.filter((oldCard) => oldCard._id !== card._id)))
+        api.deleteCard(cardToDelete._id)
+            .then(() => {
+                setCards((oldCards) => oldCards.filter((oldCard) => oldCard._id !== cardToDelete._id))
+                closeAllPopups();
+            })
             .catch(err => console.error(`Error: ${err}`));
     }
 
@@ -60,6 +65,7 @@ export default function App() {
         setIsAddCardPopupOpened(false);
         setIsChangeAvatarPopupOpened(false);
         setSelectedCard(null);
+        setIsDeleteCardPopupOpened(false)
     };
 
     function handleUpdateUser (userData) {
@@ -93,6 +99,7 @@ export default function App() {
     const handleEditProfileClick = () => setIsEditPopupOpened(true);
     const handleAddPlaceClick = () => setIsAddCardPopupOpened(true);
     const handleCardClick = (card) => setSelectedCard(card);
+    const handleDeleteCardClick = (card) => {setCardToDelete(card); setIsDeleteCardPopupOpened(true)};
 
     return (
         <>
@@ -106,6 +113,7 @@ export default function App() {
                 onEditButton={handleEditProfileClick}
                 onAddButton={handleAddPlaceClick}
                 onCardClick={handleCardClick}
+                onCardDeleteConfirm={handleDeleteCardClick}
             />
             <Footer/>
 
@@ -128,10 +136,11 @@ export default function App() {
                 onClose={closeAllPopups} />
 
             {/* Попап удаления карточки */}
-            <PopupWithForm
-                name={"delete-card"}
-                title={"Вы уверены?"}
-                saveButtonText={"Да"} />
+            <DeleteCardPopup
+                isOpen={isDeleteCardPopupOpened}
+                onClose={closeAllPopups}
+                onCardDelete={handleCardDelete}
+                card={cardToDelete} />
 
             {/* Попап открытия полноразмерной карточки */}
             <ImagePopup
